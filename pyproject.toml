@@ -1,0 +1,25 @@
+[project]
+name = "auraflix"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "aiofiles>=24.1.0",
+    "alembic>=1.16.5",
+    "argon2-cffi>=25.1.0",
+    "celery>=5.5.3",
+    "email-validator>=2.3.0",
+    "fastapi[all]>=0.117.1",
+    "jwt>=1.4.0",
+    "libmagic>=1.0",
+    "passlib>=1.7.4",
+    "psycopg2-binary>=2.9.10",
+    "python-decouple>=3.8",
+    "python-jose>=3.5.0",
+    "python-magic>=0.4.27",
+    "python-multipart>=0.0.20",
+    "redis>=6.4.0",
+    "sqlalchemy>=2.0.43",
+    "starlette-admin[full,sqla]>=0.15.1",
+]
