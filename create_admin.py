@@ -11,7 +11,9 @@ from app.models import User
 from app.utils.password import hash_password
 
 
-def create_admin_user(email: str, password: str, first_name: str = None, last_name: str = None):
+def create_admin_user(
+    email: str, password: str, first_name: str = None, last_name: str = None
+):
     """Create an admin user in the database."""
     db = SessionLocal()
     try:
@@ -20,13 +22,13 @@ def create_admin_user(email: str, password: str, first_name: str = None, last_na
         if existing:
             print(f"❌ User with email {email} already exists!")
             if existing.is_admin:
-                print(f"✓ User is already an admin.")
+                print("✓ User is already an admin.")
             else:
                 # Promote to admin
                 existing.is_admin = True
                 existing.is_verified = True
                 db.commit()
-                print(f"✓ User promoted to admin!")
+                print("✓ User promoted to admin!")
             return existing
 
         # Create new admin user
@@ -43,7 +45,7 @@ def create_admin_user(email: str, password: str, first_name: str = None, last_na
         db.add(admin_user)
         db.commit()
         db.refresh(admin_user)
-        print(f"✅ Admin user created successfully!")
+        print("✅ Admin user created successfully!")
         print(f"   Email: {email}")
         print(f"   Name: {first_name} {last_name}")
         print(f"   Admin: {admin_user.is_admin}")
@@ -60,18 +62,18 @@ if __name__ == "__main__":
     print("=" * 50)
     print("AuraFlix - Create Admin User")
     print("=" * 50)
-    
+
     email = input("Enter admin email: ").strip()
     password = input("Enter admin password: ").strip()
     first_name = input("Enter first name (optional): ").strip() or None
     last_name = input("Enter last name (optional): ").strip() or None
-    
+
     if not email or not password:
         print("❌ Email and password are required!")
         exit(1)
-    
+
     create_admin_user(email, password, first_name, last_name)
-    
+
     print("\n" + "=" * 50)
     print("Admin Panel Access:")
     print("URL: http://localhost:8000/admin")

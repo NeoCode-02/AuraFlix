@@ -4,7 +4,6 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from app.database import Base
 from app.config import settings
-from app.models import User, Movie, Genre  # Import models for alembic autogenerate
 
 from alembic import context
 
