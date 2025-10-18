@@ -28,7 +28,7 @@ router = APIRouter(prefix="/api/v1/movies", tags=["movies"])
 
 
 @router.get("/", response_model=List[schemas.MovieOut])
-def list_movies(
+async def list_movies(
     db: db_dependency,
     skip: int = 0,
     limit: int = 50,
@@ -39,7 +39,7 @@ def list_movies(
 
 
 @router.get("/{movie_id}", response_model=schemas.MovieOut)
-def get_movie(movie_id: int, db: db_dependency, _u=Depends(get_current_active_user)):
+async def get_movie(movie_id: int, db: db_dependency, _u=Depends(get_current_active_user)):
     movie = services.get_movie(db, movie_id)
     if not movie:
         raise HTTPException(status_code=404, detail="Not found")
@@ -49,7 +49,7 @@ def get_movie(movie_id: int, db: db_dependency, _u=Depends(get_current_active_us
 @router.post(
     "/upload", response_model=schemas.MovieOut, status_code=status.HTTP_201_CREATED
 )
-def upload_movie(
+async def upload_movie(
     db: db_dependency,
     title: str = Form(...),
     description: Optional[str] = Form(None),
@@ -138,7 +138,7 @@ def upload_movie(
 
 
 @router.get("/{movie_id}/stream")
-def stream_movie(
+async def stream_movie(
     movie_id: int,
     request: Request,
     db: db_dependency,

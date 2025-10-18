@@ -26,7 +26,7 @@ def _gen_code() -> str:
 
 
 @router.post("/register", response_model=schemas.UserOut)
-def register(user_in: schemas.UserCreate, db: db_dependency):
+async def register(user_in: schemas.UserCreate, db: db_dependency):
     existing = services.get_user_by_email(db, user_in.email)
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -44,7 +44,7 @@ def register(user_in: schemas.UserCreate, db: db_dependency):
 
 
 @router.post("/resend-code")
-def resend_code(email: str, db: db_dependency):
+async def resend_code(email: str, db: db_dependency):
     rate_limit(f"resend:{email}", limit=5, window=120)  # max 5 per 2 minutes
     user = services.get_user_by_email(db, email)
     if not user:
@@ -56,7 +56,7 @@ def resend_code(email: str, db: db_dependency):
 
 
 @router.post("/verify")
-def verify(email: str, code: str, db: db_dependency):
+async def verify(email: str, code: str, db: db_dependency):
     user = services.get_user_by_email(db, email)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -71,7 +71,7 @@ def verify(email: str, code: str, db: db_dependency):
 
 
 @router.post("/login")
-def login(db: db_dependency, form_data: OAuth2PasswordRequestForm = Depends()):
+async def login(db: db_dependency, form_data: OAuth2PasswordRequestForm = Depends()):
     """
     OAuth2 login endpoint. Works with OAuth2PasswordBearer.
     """
@@ -94,7 +94,7 @@ def login(db: db_dependency, form_data: OAuth2PasswordRequestForm = Depends()):
 
 
 @router.post("/refresh")
-def refresh_token(refresh_token: str = Form(...)):
+async def refresh_token(refresh_token: str = Form(...)):
     from app.utils.password import decode_token
 
     payload = decode_token(refresh_token)
@@ -108,7 +108,7 @@ def refresh_token(refresh_token: str = Form(...)):
 
 
 @router.get("/me")
-def get_me(current_user: models.User = Depends(get_current_active_user)):
+async def get_me(current_user: models.User = Depends(get_current_active_user)):
     return {
         "id": current_user.id,
         "email": current_user.email,
@@ -117,7 +117,7 @@ def get_me(current_user: models.User = Depends(get_current_active_user)):
 
 
 @router.post("/password-reset/request")
-def password_reset_request(email: str, db: db_dependency):
+async def password_reset_request(email: str, db: db_dependency):
     user = services.get_user_by_email(db, email)
     if not user:
         return {"msg": "If the email exists, a code has been sent"}
@@ -128,7 +128,7 @@ def password_reset_request(email: str, db: db_dependency):
 
 
 @router.post("/password-reset/confirm")
-def password_reset_confirm(email: str, code: str, new_password: str, db: db_dependency):
+async def password_reset_confirm(email: str, code: str, new_password: str, db: db_dependency):
     user = services.get_user_by_email(db, email)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
